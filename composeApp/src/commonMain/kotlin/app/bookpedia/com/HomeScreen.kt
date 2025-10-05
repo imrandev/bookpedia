@@ -10,13 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 
-class HomeScreen() : Screen {
+class HomeScreen() : LifecycleAwareScreen() {
 
     @Composable
-    override fun Content() {
+    override fun ScreenContent() {
         val navigator = LocalNavigator.current
         Scaffold(
             topBar = {

@@ -1,5 +1,6 @@
 package app.bookpedia.com
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,25 +20,21 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
+import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
 
-class ProfileScreen() : Screen {
+class ProfileScreen() : LifecycleAwareScreen() {
 
     @Composable
-    override fun Content() {
+    override fun ScreenContent() {
         val navigator = LocalNavigator.current
-
-        // Detect when screen is disposed/destroyed
-        DisposableEffect(Unit) {
-            onDispose {
-                AppNavigator.clearArguments(this@ProfileScreen)
-            }
-        }
 
         Scaffold(
             topBar = {
@@ -57,7 +54,7 @@ class ProfileScreen() : Screen {
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     // Profile avatar
-                    Box(
+                    /*Box(
                         modifier = Modifier
                             .size(120.dp)
                             .background(MaterialTheme.colorScheme.primary, CircleShape)
@@ -70,6 +67,37 @@ class ProfileScreen() : Screen {
                             tint = MaterialTheme.colorScheme.onPrimary,
                             modifier = Modifier.size(48.dp)
                         )
+                    }*/
+
+                    val painter = rememberAsyncImagePainter(
+                        model = "https://fabulouspic.com/wp-content/uploads/2025/01/Single-Boy-Instagram-DP24.jpg",
+                        contentScale = ContentScale.Crop
+                    )
+
+                    // Check the loading state
+                    when (painter.state) {
+                        else -> {
+                            // Show the loaded image
+                            Box(
+                                modifier = Modifier
+                                    .size(120.dp)
+                                    .background(MaterialTheme.colorScheme.primary, CircleShape),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Image(
+                                    painter = painter,
+                                    contentDescription = "Profile picture of ${
+                                        AppNavigator.getArguments(
+                                            this@ProfileScreen
+                                        )["name"]
+                                    }",
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(CircleShape),
+                                    contentScale = ContentScale.FillWidth
+                                )
+                            }
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(24.dp))
